@@ -5,18 +5,19 @@ import os
 # ⚙️ CONFIGURACIÓN DEL RECORTE MANUAL
 # ==========================================
 
-# 1. ¿Qué myth quedó mal cortado? (Pon el número aquí, ej: 11 para la carpeta 011)
-numero_myth = 1
+# 1. ¿Qué myth quedó mal cortado? (Pon el número aquí)
+numero_myth = 50
 
-# 2. Ajuste de las líneas de corte vertical (IZQ/DER) en píxeles
-# - Positivo mueve el corte hacia la DERECHA. Negativo hacia la IZQUIERDA.
-mover_corte_1 = 0   # Ajusta la línea que separa el PORTRAIT del FRONT
-mover_corte_2 = 0  # Ajusta la línea que separa el FRONT del BACK
+# 2. Ajuste del ANCHO DEL CENTRO (FRONT) en píxeles
+# - Valores POSITIVOS (+) le dan más espacio al centro (hacen la imagen central más ancha).
+# - Valores NEGATIVOS (-) le quitan espacio al centro (la hacen más estrecha).
+espacio_extra_izquierda = 90  # Le roba píxeles al Portrait para dárselos al Front
+espacio_extra_derecha = 20    # Le roba píxeles al Back para dárselos al Front
 
 # 3. Ajuste de los bordes horizontales (ARRIBA/ABAJO) en píxeles
 # - Pon un número POSITIVO para "comer" espacio sobrante de la imagen.
-recorte_arriba = 220  # Ej: 20 quitará 20 píxeles del techo transparente.
-recorte_abajo = 290   # Ej: 30 quitará 30 píxeles del suelo transparente.
+recorte_arriba = 50  # Quita píxeles del techo transparente.
+recorte_abajo = 140   # Quita píxeles del suelo transparente.
 
 # ==========================================
 
@@ -33,15 +34,17 @@ if os.path.exists(ruta_imagen):
         # Calculamos los cortes originales (matemáticamente exactos en anchura)
         tercio = ancho // 3
         
-        # Aplicamos tus ajustes manuales X (Izquierda / Derecha)
-        corte_1_real = tercio + mover_corte_1
-        corte_2_real = (tercio * 2) + mover_corte_2
+        # Aplicamos tus ajustes para ensanchar el centro
+        # Al corte 1 le RESTAMOS para que se mueva a la izquierda (dando espacio al centro)
+        # Al corte 2 le SUMAMOS para que se mueva a la derecha (dando espacio al centro)
+        corte_1_real = tercio - espacio_extra_izquierda
+        corte_2_real = (tercio * 2) + espacio_extra_derecha
         
         # Aplicamos tus ajustes manuales Y (Arriba / Abajo)
         techo = recorte_arriba
         suelo = alto - recorte_abajo
         
-        # Validamos para que no intente cortar fuera de la imagen o al revés
+        # Validamos para que no intente cortar fuera de la imagen
         corte_1_real = max(0, min(corte_1_real, ancho))
         corte_2_real = max(0, min(corte_2_real, ancho))
         techo = max(0, min(techo, alto - 1))

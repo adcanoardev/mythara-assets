@@ -1,0 +1,7 @@
+# Ignorar librerías de Node.js (¡MUY IMPORTANTE!)
+node_modules/
+package-lock.json
+
+# Ignorar las carpetas de imágenes generadas/crudas (opcional, pero recomendado si pesan mucho)
+lab/assets_raw/
+lab/assets_web/
